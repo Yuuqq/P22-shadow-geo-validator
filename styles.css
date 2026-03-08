@@ -1,0 +1,369 @@
+:root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e0e2e6;
+    --text-main: #202124;
+    --text-muted: #5f6368;
+    --primary: #5c35d4;
+    --sun: #fbbc04;
+    --shadow: #3c4043;
+    --obs: #ea4335;
+    --success: #0f9d58;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+.app {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.hero {
+    background: var(--card);
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    margin: 0 0 12px;
+    font-size: 26px;
+    color: var(--primary);
+}
+
+.hero p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+@media (min-width: 800px) {
+    .dashboard {
+        flex-direction: row;
+    }
+
+    .calculator {
+        flex: 1;
+    }
+
+    .visualizer {
+        flex: 1;
+    }
+}
+
+.panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.panel h2 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.help-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+input[type="number"],
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+    background: #fafafa;
+}
+
+.coord-inputs {
+    display: flex;
+    gap: 12px;
+}
+
+.coord-inputs input {
+    width: 50%;
+}
+
+.btn {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn.primary:hover {
+    background: #4a29af;
+}
+
+.btn.full-width {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.text-btn {
+    background: transparent;
+    color: var(--primary);
+    padding: 4px 8px;
+}
+
+.text-btn:hover {
+    background: #f0ebf8;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Compass rendering */
+.compass-container {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.compass-rose {
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    position: relative;
+    background: radial-gradient(circle, #fafafa 60%, #fff 100%);
+}
+
+.mark {
+    position: absolute;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-muted);
+}
+
+.m-n {
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.m-e {
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.m-s {
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.m-w {
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.center-dot {
+    width: 12px;
+    height: 12px;
+    background: #aaa;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+.needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 90px;
+    transform-origin: 50% 0px;
+    /* Pivots from the center (which is the top of the needle div) */
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+}
+
+/* Needles point "up" towards 0 degrees initially. But we want the line to grow from center outward. 
+   So top:50%, left:50%, transform-origin: top center. 
+   The div itself draws downward initially. So rotation 0 points South by default in CSS if we draw downwards.
+   We need to initially rotate 180 so it points North.
+*/
+.needle .line {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+}
+
+.needle .label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+/* Sun is yellow */
+.sun-needle .line {
+    background: var(--sun);
+    box-shadow: 0 0 10px var(--sun);
+}
+
+.sun-needle .label {
+    color: #d69e00;
+}
+
+/* Shadow is dark grey, goes opposite to sun */
+.shadow-needle .line {
+    background: rgba(60, 64, 67, 0.6);
+}
+
+.shadow-needle .label {
+    color: var(--shadow);
+}
+
+/* Observed Shadow is red dashed (actually we just use a different color) */
+.obs-needle .line {
+    background: var(--obs);
+    width: 2px;
+}
+
+.obs-needle .label {
+    color: var(--obs);
+}
+
+.results-report {
+    display: flex;
+    gap: 12px;
+    flex-direction: column;
+}
+
+.report-box {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+}
+
+.report-box h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.report-box p {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.report-box strong {
+    color: var(--text-main);
+    font-size: 15px;
+}
+
+.r-val {
+    border-left-color: var(--success);
+}
+
+.r-val.fail {
+    border-left-color: var(--obs);
+    background: #fce8e6;
+}
+
+.r-val.fail #valMessage {
+    color: #c5221f;
+    font-weight: bold;
+}
+
+.article-panel {
+    background: #fff3e0;
+    border: 1px solid #ffe0b2;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    font-size: 14.5px;
+}
+
+.article-panel h3 {
+    margin: 0 0 16px;
+    color: #ef6c00;
+}
+
+.val-copy {
+    background: #ffe0b2;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #d84315;
+    font-weight: bold;
+}
+
+.val-copy:hover {
+    background: #ffcc80;
+}
+
+.hint {
+    font-size: 13px;
+    color: #8d6e63;
+    font-weight: 600;
+    margin-top: 16px;
+}

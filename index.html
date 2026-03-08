@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>P22 OSINT 太阳阴影测绘与寻址推算仪</title>
+  <link rel="stylesheet" href="../shared/design-tokens.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <meta name="description" content="基于 SunCalc 算法的太阳方位角测算与照片拍摄地地理核验工具" />
+</head>
+
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>OSINT 太阳阴影测绘与寻址推算仪</h1>
+      <p>
+        在开源情报 (OSINT) 调查中，照片中物体阴影的朝向和长度是核实“拍摄时间”与“拍摄地点”的铁证。
+        本计算器调用真实的 <strong>SunCalc 天文几何算法</strong>，助你像 Bellingcat 调查员一样，用物理学原理戳穿谎言。
+      </p>
+    </header>
+
+    <div class="dashboard">
+      <!-- 计算器与沙盘输入区 -->
+      <section class="calculator panel">
+        <div class="panel-header">
+          <h2>📐 核心推算参数输入</h2>
+          <button id="btnLoadCase" class="btn text-btn">📖 载入经典案例</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>1. 拍摄地点 (经纬度)</label>
+            <div class="coord-inputs">
+              <input type="number" id="lat" placeholder="纬度 (-90 到 90)" step="0.0001" value="31.2304">
+              <input type="number" id="lng" placeholder="经度 (-180 到 180)" step="0.0001" value="121.4737">
+            </div>
+            <p class="help-text">正数为北纬/东经，负数为南纬/西经</p>
+          </div>
+
+          <div class="form-group">
+            <label>2. 拍摄时间 (当地时间)</label>
+            <input type="datetime-local" id="dt" value="">
+          </div>
+
+          <div class="form-group">
+            <label>3. 提取的阴影方位角 (选填, 0-360°)</label>
+            <input type="number" id="obsShadow" placeholder="例: 正北阴影为 0°, 正东 90°" min="0" max="360" step="1">
+            <p class="help-text">在卫星图或照片中测量的物体阴影方向。太阳方位角与阴影角相差 180°。</p>
+          </div>
+        </div>
+
+        <button id="btnCalc" class="btn primary full-width">🛰️ 执行天文轨线计算</button>
+      </section>
+
+      <!-- 视觉渲染与验证反馈 -->
+      <section class="visualizer panel">
+        <h2>🧭 日晷仪 (Sun-Shadow Compass)</h2>
+
+        <div id="compassContainer" class="compass-container">
+          <div class="compass-rose">
+            <span class="mark m-n">北(0°)</span>
+            <span class="mark m-e">东(90°)</span>
+            <span class="mark m-s">南(180°)</span>
+            <span class="mark m-w">西(270°)</span>
+
+            <div id="pinShadow" class="needle shadow-needle hidden">
+              <div class="line"></div>
+              <div class="label">理论阴影</div>
+            </div>
+            <div id="pinSun" class="needle sun-needle hidden">
+              <div class="line"></div>
+              <div class="label">☀️ 太阳</div>
+            </div>
+            <div id="pinObserved" class="needle obs-needle hidden">
+              <div class="line"></div>
+              <div class="label">目测阴影</div>
+            </div>
+
+            <div class="center-dot"></div>
+          </div>
+        </div>
+
+        <div class="results-report">
+          <div class="report-box r-sys">
+            <h4>算法测算结果</h4>
+            <p>太阳方位角 (Azimuth): <strong id="resSunAz">-</strong></p>
+            <p>太阳高度角 (Altitude): <strong id="resSunAlt">-</strong></p>
+            <p>理论阴影角 (Shadow Angle): <strong id="resShadowAz">-</strong></p>
+          </div>
+          <div id="validationResult" class="report-box r-val hidden">
+            <h4>核验结论</h4>
+            <p id="valMessage">-</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 教学案例区 -->
+    <section id="caseStudy" class="article-panel hidden">
+      <h3>📚 Bellingcat 经典战例：喀麦隆处决视频的寻址</h3>
+      <p>
+        <strong>背景：</strong> 2018年，一段视频显示喀麦隆军人处决了平民。喀麦隆政府最初声称这是“发在马里的假新闻”。
+      </p>
+      <p>
+        <strong>侦破核心：</strong> 英国开源情报组织 Bellingcat 的调查员仔细观察了视频中士兵踩在泥土路上的脚印和人体倒下的阴影。他们：
+      <ol>
+        <li>通过对比 Google Earth 山脊线，确认了疑似地点的经纬度（<code class="val-copy"
+            data-val="10.9859,14.2831">10.9859, 14.2831</code>）。</li>
+        <li>通过测量视频中士兵投下的极短的影子，发现阴影方位约为 <code class="val-copy" data-val="100">100°</code>（略偏东），且此时太阳几乎在正头顶。</li>
+        <li>结合当时当地气候，逆向利用本系统（SunCalc 公式），推算出该影长的太阳高度角，锁定了拍摄时间只能在 3 月底到 4 月初的干旱季正午 <code class="val-copy"
+            data-val="2015-03-31T12:00">2015-03-31 12:00</code>。</li>
+      </ol>
+      </p>
+      <p class="hint">💡 点击上方代码块中的数值，尝试将战例数据填入计算器，验证政府的谎言！</p>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js" crossorigin="anonymous"></script>
+  <script src="./pm-metrics.js" defer></script>
+  <script src="./app.js" defer></script>
+
+  <!-- Navigation -->
+  <nav
+    style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:24px;color:#666;">
+    <a href="https://yuuqq.github.io/_codex/" style="text-decoration:none;">📋 工具箱导航</a>
+    <span style="opacity:.4">P22</span>
+  </nav>
+</body>
+
+</html>
