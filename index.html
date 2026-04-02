@@ -10,10 +10,26 @@
   <link rel="stylesheet" href="../shared/design-tokens.css" />
   <link rel="stylesheet" href="./styles.css" />
   <meta name="description" content="基于 SunCalc 算法的太阳方位角测算与照片拍摄地地理核验工具" />
+  <link rel="manifest" href="./manifest.json" />
+
+  <meta property="og:title" content="P22 阴影验证器 — 新闻素养工具箱">
+  <meta property="og:description" content="互动式新闻素养教学工具：阴影验证器。浏览器打开即用，数据不离开本地。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yuuqq.github.io/P22-shadow-geo-validator/">
+  <meta name="twitter:card" content="summary">
+  <meta name="description" content="P22 阴影验证器 — 50个新闻素养互动教学工具之一">
+<style media="print">
+.gnav,.pedagogy-panel,.explore-section,[class*="dark-toggle"],button[aria-label]{display:none!important}
+body{background:#fff!important;color:#000!important;font-size:11pt}
+.app,main,.container{box-shadow:none!important;border:none!important;padding:0!important}
+a{color:#000!important;text-decoration:underline}
+a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
+@page{margin:2cm}
+</style>
 </head>
 
 <body>
-  <main class="app">
+  <main aria-label="主内容区域" class="app">
     <header class="hero">
       <h1>OSINT 太阳阴影测绘与寻址推算仪</h1>
       <p>
@@ -22,12 +38,14 @@
       </p>
     </header>
 
+    <section class="card"><details class="teach-card" open><summary>🎓 阴影分析与地理位置验证</summary><p>通过照片中的阴影角度和光线方向，结合拍摄日期和当地太阳位置，可以反向推算照片的拍摄地点和时间。这是 OSINT（开源情报）中的经典验证技术，广泛用于新闻核查和战争报道。</p></details></section>
+
     <div class="dashboard">
       <!-- 计算器与沙盘输入区 -->
       <section class="calculator panel">
         <div class="panel-header">
           <h2>📐 核心推算参数输入</h2>
-          <button id="btnLoadCase" class="btn text-btn">📖 载入经典案例</button>
+          <button id="btnLoadCase" class="btn text-btn" aria-label="Load Case">📖 载入经典案例</button>
         </div>
 
         <div class="form-grid">
@@ -52,7 +70,7 @@
           </div>
         </div>
 
-        <button id="btnCalc" class="btn primary full-width">🛰️ 执行天文轨线计算</button>
+        <button id="btnCalc" class="btn primary full-width" aria-label="Calc">🛰️ 执行天文轨线计算</button>
       </section>
 
       <!-- 视觉渲染与验证反馈 -->
@@ -119,16 +137,27 @@
 
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js" crossorigin="anonymous"></script>
+  <script src="../shared/vendor/suncalc.js"></script>
   <script src="./pm-metrics.js" defer></script>
   <script src="./app.js" defer></script>
 
   <!-- Navigation -->
-  <nav
+  <nav aria-label="工具箱导航"
     style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:24px;color:#666;">
-    <a href="https://yuuqq.github.io/_codex/" style="text-decoration:none;">📋 工具箱导航</a>
+    <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
     <span style="opacity:.4">P22</span>
   </nav>
+  <script src="../shared/dark-toggle.js" defer></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+  <script src="../shared/cmd-palette.js" defer></script>
+  <script src="../shared/toast.js" defer></script>
+  <script src="../shared/onboarding.js" defer></script>
+  <script src="../shared/url-state.js" defer></script>
+
+  <script src="../shared/pedagogy-data-p1.js" defer></script>
+  <script src="../shared/pedagogy-data-p2.js" defer></script>
+  <script src="../shared/global-nav.js" defer></script>
+  <script src="../shared/kbd-hints.js" defer></script>
 </body>
 
 </html>

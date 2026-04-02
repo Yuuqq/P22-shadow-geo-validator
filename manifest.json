@@ -1,0 +1,16 @@
+{
+  "name": "P22 OSINT 太阳阴影测绘与寻址推算仪",
+  "short_name": "P22",
+  "description": "P22 OSINT 太阳阴影测绘与寻址推算仪 — 新闻素养工具",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f0e8",
+  "theme_color": "#c7491f",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

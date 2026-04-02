@@ -47,7 +47,7 @@ btnCalc.addEventListener("click", () => {
   const lng = parseFloat(lngInput.value);
 
   if (!dtVal || isNaN(lat) || isNaN(lng)) {
-    alert("请正确填写日期时间和经纬度。");
+    document.getElementById("calcResult").innerHTML = `<div class="summary-box" style="color:var(--error);border-color:var(--error)">错误：请正确填写日期时间和经纬度。</div>`;
     return;
   }
 
