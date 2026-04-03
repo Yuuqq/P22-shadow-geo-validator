@@ -158,3 +158,24 @@ document.querySelectorAll('.val-copy').forEach(el => {
     }, { once: false });
   } catch (_e) { }
 })();
+
+
+// === Auto-run demo if parameters are pre-filled ===
+(function() {
+  setTimeout(function() {
+    var calcBtn = document.getElementById('calcBtn') || document.querySelector('button[id*="calc"]') || document.querySelector('button');
+    var latInput = document.querySelector('input[id*="lat"]');
+    if (latInput && !latInput.value) {
+      latInput.value = '39.9042';
+      var lngInput = document.querySelector('input[id*="lng"]') || document.querySelector('input[id*="lon"]');
+      if (lngInput) lngInput.value = '116.4074';
+      var dateInput = document.querySelector('input[type="date"]');
+      if (dateInput) dateInput.value = '2024-06-21';
+      var timeInput = document.querySelector('input[type="time"]');
+      if (timeInput) timeInput.value = '14:30';
+      [latInput, lngInput, dateInput, timeInput].forEach(function(el) {
+        if (el) el.dispatchEvent(new Event('input', {bubbles:true}));
+      });
+    }
+  }, 600);
+})();
