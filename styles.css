@@ -651,3 +651,32 @@ details.teach-card[open] summary {
     .hero { background: var(--card, #fff); }
   }
 }
+
+/* =====================================================================
+ * v2.5 tool-specific — per-tool unique enhancements
+ * Archetypes: chart_svg
+ * ===================================================================== */
+
+/* Chart/SVG visualization emphasis */
+svg { display: block; max-width: 100%; }
+svg text { font-family: ui-sans-serif, system-ui, "Noto Sans SC", sans-serif; }
+.chart, .chart-card, .chartWrap, [id="chart"], [id="scatterPlot"], [id="chartContainer"] {
+  border-radius: 12px;
+  background: var(--card, #fff);
+  position: relative;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  svg [data-bar], svg .bar, svg path[data-segment], svg rect[data-bar] {
+    transition: opacity 0.15s ease;
+  }
+  svg [data-bar]:hover, svg .bar:hover { opacity: 0.85; }
+}
+
+/* P22 — Compass + dashboard layout */
+.compass-container { aspect-ratio: 1 / 1; max-width: 320px; margin: 0 auto; }
+.compass-rose { width: 100%; height: 100%; }
+.center-dot { fill: var(--accent, #2563eb); }
+.dashboard, .article-panel { padding: 14px; border-radius: 12px; }
+.coord-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.calculator label { font-size: 0.88em; color: var(--muted, #6b7280); }
+
