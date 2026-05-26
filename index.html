@@ -1,10 +1,8 @@
 <!doctype html>
 <html lang="zh-CN">
-
 <head>
   <meta charset="utf-8" />
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>P22 OSINT 太阳阴影测绘与寻址推算仪</title>
   <link rel="stylesheet" href="../shared/design-tokens.css" />
@@ -17,9 +15,7 @@
   <meta property="og:description" content="互动式新闻素养教学工具：阴影验证器。浏览器打开即用，数据不离开本地。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yuuqq.github.io/P22-shadow-geo-validator/">
-  <meta name="twitter:card" content="summary">
-  <meta name="description" content="P22 阴影验证器 — 50个新闻素养互动教学工具之一">
-<style media="print">
+    <style media="print">
 .gnav,.pedagogy-panel,.explore-section,[class*="dark-toggle"],button[aria-label]{display:none!important}
 body{background:#fff!important;color:#000!important;font-size:11pt}
 .app,main,.container{box-shadow:none!important;border:none!important;padding:0!important}
@@ -137,28 +133,30 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
     </section>
 
   </main>
-
-  <script src="../shared/vendor/suncalc.js"></script>
   <script src="./pm-metrics.js" defer></script>
-  <script src="./app.js" defer></script>
+<script src="./app.js" defer></script>
 
-  <!-- Navigation -->
-  <nav aria-label="工具箱导航"
-    style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:24px;color:#666;">
+  <!-- Privacy Notice -->
+  <div style="text-align:center;padding:12px 16px;font-size:12px;color:#888;border-top:1px solid #eee;margin-top:24px;">
+    🔒 隐私提示：本工具所有数据处理均在您的浏览器本地完成，不会上传任何数据至服务器。
+  </div>
+
+  <!-- Cross-Project Navigation -->
+  <nav aria-label="工具箱导航" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:16px;color:#666;">
     <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
     <span style="opacity:.4">P22</span>
   </nav>
-  <script src="../shared/dark-toggle.js" defer></script>
-  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
-  <script src="../shared/cmd-palette.js" defer></script>
-  <script src="../shared/toast.js" defer></script>
-  <script src="../shared/onboarding.js" defer></script>
-  <script src="../shared/url-state.js" defer></script>
 
-  <script src="../shared/pedagogy-data-p1.js" defer></script>
-  <script src="../shared/pedagogy-data-p2.js" defer></script>
-  <script src="../shared/global-nav.js" defer></script>
-  <script src="../shared/kbd-hints.js" defer></script>
+<script src="../shared/dark-toggle.js" defer></script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+<script src="../shared/cmd-palette.js" defer></script>
+<script src="../shared/toast.js" defer></script>
+<script src="../shared/onboarding.js" defer></script>
+<script src="../shared/pedagogy-data-p1.js" defer></script>
+<script src="../shared/pedagogy-data-p2.js" defer></script>
+<script src="../shared/global-nav.js" defer></script>
+<script src="../shared/kbd-hints.js" defer></script>
+  <script src="../shared/url-state.js" defer></script>
 </body>
 
 </html>
