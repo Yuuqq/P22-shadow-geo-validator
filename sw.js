@@ -8,15 +8,26 @@
  * 3. 网络优先 (Network-First) 获取 API 请求
  * 4. 离线回退页面
  */
-const CACHE_NAME = "journalism-tool-v1";
+const CACHE_NAME = "journalism-tool-P22-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
+  "./manifest.json",
   "./styles.css",
+  "./modern-styles.css",
   "./app.js",
   "./pm-metrics.js",
   "../shared/design-tokens.css",
-  "../shared/dark-toggle.js"
+  "../shared/dark-toggle.js",
+  "../shared/cmd-palette.js",
+  "../shared/toast.js",
+  "../shared/onboarding.js",
+  "../shared/pedagogy-data-p1.js",
+  "../shared/pedagogy-data-p2.js",
+  "../shared/global-nav.js",
+  "../shared/kbd-hints.js",
+  "../shared/url-state.js",
+  "../shared/vendor/suncalc.js"
 ];
 
 // Install: Pre-cache core assets
@@ -54,31 +65,32 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        // Return cache, but also update in background (stale-while-revalidate)
-        const fetchPromise = fetch(event.request).then((response) => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        }).catch(() => {});
-        return cached;
-      }
-      return fetch(event.request).then((response) => {
+  const responsePromise = caches.match(event.request).then((cached) => {
+    if (cached) {
+      // Return cache, but also update in background (stale-while-revalidate)
+      const fetchPromise = fetch(event.request).then((response) => {
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
-      }).catch(() => {
-        // Offline fallback
-        if (event.request.destination === "document") {
-          return caches.match("./index.html");
-        }
-      });
-    })
-  );
+      }).catch(() => {});
+      event.waitUntil(fetchPromise);
+      return cached;
+    }
+    return fetch(event.request).then((response) => {
+      if (response && response.status === 200) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+      }
+      return response;
+    }).catch(() => {
+      // Offline fallback
+      if (event.request.destination === "document") {
+        return caches.match("./index.html");
+      }
+    });
+  });
+
+  event.respondWith(responsePromise);
 });

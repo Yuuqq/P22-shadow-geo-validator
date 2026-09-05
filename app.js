@@ -47,7 +47,9 @@ btnCalc.addEventListener("click", () => {
   const lng = parseFloat(lngInput.value);
 
   if (!dtVal || isNaN(lat) || isNaN(lng)) {
-    document.getElementById("calcResult").innerHTML = `<div class="summary-box" style="color:var(--error);border-color:var(--error)">错误：请正确填写日期时间和经纬度。</div>`;
+    validationResult.classList.remove("hidden");
+    validationResult.classList.add("fail");
+    valMessage.textContent = "错误：请正确填写日期时间和经纬度。";
     return;
   }
 
@@ -117,10 +119,11 @@ btnLoadCase.addEventListener('click', () => {
   caseStudyPanel.classList.toggle('hidden');
 });
 
-// Click to copy values from case study to inputs
+// Click to copy values from case study to inputs (keyboard accessible)
 document.querySelectorAll('.val-copy').forEach(el => {
-  el.addEventListener('click', (e) => {
-    const rawVal = e.target.getAttribute('data-val');
+  el.setAttribute('tabindex', '0');
+  const applyVal = () => {
+    const rawVal = el.getAttribute('data-val');
 
     if (rawVal.includes(',')) {
       const [la, lo] = rawVal.split(',');
@@ -133,13 +136,20 @@ document.querySelectorAll('.val-copy').forEach(el => {
     }
 
     // Highlight effect
-    const origBg = e.target.style.background;
-    e.target.style.background = '#4caf50';
-    e.target.style.color = '#fff';
+    const origBg = el.style.background;
+    el.style.background = '#4caf50';
+    el.style.color = '#fff';
     setTimeout(() => {
-      e.target.style.background = origBg;
-      e.target.style.color = '';
+      el.style.background = origBg;
+      el.style.color = '';
     }, 500);
+  };
+  el.addEventListener('click', applyVal);
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      applyVal();
+    }
   });
 });
 
@@ -157,25 +167,4 @@ document.querySelectorAll('.val-copy').forEach(el => {
       }
     }, { once: false });
   } catch (_e) { }
-})();
-
-
-// === Auto-run demo if parameters are pre-filled ===
-(function() {
-  setTimeout(function() {
-    var calcBtn = document.getElementById('calcBtn') || document.querySelector('button[id*="calc"]') || document.querySelector('button');
-    var latInput = document.querySelector('input[id*="lat"]');
-    if (latInput && !latInput.value) {
-      latInput.value = '39.9042';
-      var lngInput = document.querySelector('input[id*="lng"]') || document.querySelector('input[id*="lon"]');
-      if (lngInput) lngInput.value = '116.4074';
-      var dateInput = document.querySelector('input[type="date"]');
-      if (dateInput) dateInput.value = '2024-06-21';
-      var timeInput = document.querySelector('input[type="time"]');
-      if (timeInput) timeInput.value = '14:30';
-      [latInput, lngInput, dateInput, timeInput].forEach(function(el) {
-        if (el) el.dispatchEvent(new Event('input', {bubbles:true}));
-      });
-    }
-  }, 600);
 })();
