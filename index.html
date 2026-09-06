@@ -10,6 +10,7 @@
   <meta name="color-scheme" content="light dark">
   <title>P22 OSINT 太阳阴影测绘与寻址推算仪</title>
   <link rel="stylesheet" href="../shared/design-tokens.css" />
+<link rel="stylesheet" href="https://yuuqq.github.io/shared/design-tokens.css" />
   <link rel="stylesheet" href="./styles.css" />
   <meta name="description" content="基于 SunCalc 算法的太阳方位角测算与照片拍摄地地理核验工具" />
   <link rel="manifest" href="./manifest.json" />
@@ -41,7 +42,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       </p>
     </header>
 
-    <section class="card"><details class="teach-card" open><summary>🎓 阴影分析与地理位置验证</summary><p>通过照片中的阴影角度和光线方向，结合拍摄日期和当地太阳位置，可以反向推算照片的拍摄地点和时间。这是 OSINT（开源情报）中的经典验证技术，广泛用于新闻核查和战争报道。</p></details></section>
+    <section class="card"><details class="teach-card"><summary>🎓 阴影分析与地理位置验证</summary><p>通过照片中的阴影角度和光线方向，结合拍摄日期和当地太阳位置，可以反向推算照片的拍摄地点和时间。这是 OSINT（开源情报）中的经典验证技术，广泛用于新闻核查和战争报道。</p></details></section>
 
     <div class="dashboard">
       <!-- 计算器与沙盘输入区 -->
@@ -140,7 +141,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
 
   </main>
 
-  <script src="../shared/vendor/suncalc.js"></script>
+  <script src="../shared/vendor/suncalc.js" onerror="this.onerror=null;this.src='https://yuuqq.github.io/shared/vendor/suncalc.js'"></script>
   <script src="./pm-metrics.js" defer></script>
   <script src="./app.js" defer></script>
 
@@ -150,7 +151,21 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
     <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
     <span style="opacity:.4">P22</span>
   </nav>
-  <script src="../shared/releases/v2.6/loader.js" data-modules="dark,cmd,toast,onboarding,url-state,pedagogy-p1,pedagogy-p2,nav,kbd"></script>
+  <script>
+(function () {
+  var modules = "dark,cmd,toast,onboarding,url-state,pedagogy-p1,pedagogy-p2,nav,kbd";
+  var s = document.createElement("script");
+  s.src = "../shared/releases/v2.6/loader.js";
+  s.setAttribute("data-modules", modules);
+  s.onerror = function () {
+    var t = document.createElement("script");
+    t.src = "https://yuuqq.github.io/shared/releases/v2.6/loader.js";
+    t.setAttribute("data-modules", modules);
+    document.body.appendChild(t);
+  };
+  document.body.appendChild(s);
+})();
+</script>
   <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
 
 </body>
