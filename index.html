@@ -62,8 +62,12 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
           </div>
 
           <div class="form-group">
-            <label>2. 拍摄时间 (当地时间)</label>
-            <input type="datetime-local" id="dt" value="">
+            <label>2. 拍摄时间 (当地时间) 及 时区</label>
+            <div class="coord-inputs">
+              <input type="datetime-local" id="dt" value="">
+              <input type="number" id="utcOffset" placeholder="UTC时区 (如 8)" step="1" value="0" style="width: 120px;">
+            </div>
+            <p class="help-text">当地时间及该地距 UTC 标准时间的偏移量</p>
           </div>
 
           <div class="form-group">
@@ -130,9 +134,9 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       <ol>
         <li>通过对比 Google Earth 山脊线，确认了疑似地点的经纬度（<code class="val-copy"
             data-val="10.9859,14.2831">10.9859, 14.2831</code>）。</li>
-        <li>通过测量视频中士兵投下的极短的影子，发现阴影方位约为 <code class="val-copy" data-val="100">100°</code>（略偏东），且此时太阳几乎在正头顶。</li>
+        <li>通过测量视频中士兵投下的极短的影子，发现阴影方位约为 <code class="val-copy" data-val="344.1">344.1°</code>（北偏西），且此时太阳几乎在正头顶。</li>
         <li>结合当时当地气候，逆向利用本系统（SunCalc 公式），推算出该影长的太阳高度角，锁定了拍摄时间只能在 3 月底到 4 月初的干旱季正午 <code class="val-copy"
-            data-val="2015-03-31T12:00">2015-03-31 12:00</code>。</li>
+            data-val="2015-03-31T12:00,1">2015-03-31 12:00</code>（WAT时区，UTC+1）。</li>
       </ol>
       </p>
       <p class="hint">💡 点击上方代码块中的数值，尝试将战例数据填入计算器，验证政府的谎言！</p>
