@@ -7,6 +7,7 @@ const dtInput = document.getElementById("dt");
 const latInput = document.getElementById("lat");
 const lngInput = document.getElementById("lng");
 const obsInput = document.getElementById("obsShadow");
+const utcOffsetInput = document.getElementById("utcOffset");
 const btnCalc = document.getElementById("btnCalc");
 const btnLoadCase = document.getElementById("btnLoadCase");
 const caseStudyPanel = document.getElementById("caseStudy");
@@ -27,6 +28,9 @@ const pinObserved = document.getElementById("pinObserved");
 const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 dtInput.value = now.toISOString().slice(0, 16);
+if (utcOffsetInput) {
+  utcOffsetInput.value = -(new Date().getTimezoneOffset() / 60);
+}
 
 // Transform azimuth (0-360 starting from South) to CSS rotation degrees (Starting from North = 0)
 // The needle div is drawn downwards from the center.
@@ -47,12 +51,25 @@ btnCalc.addEventListener("click", () => {
   const lng = parseFloat(lngInput.value);
 
   if (!dtVal || isNaN(lat) || isNaN(lng)) {
-    document.getElementById("calcResult").innerHTML = `<div class="summary-box" style="color:var(--error);border-color:var(--error)">错误：请正确填写日期时间和经纬度。</div>`;
+    validationResult.classList.remove("hidden");
+    validationResult.classList.add("fail");
+    valMessage.textContent = "错误：请正确填写日期时间和经纬度。";
     return;
   }
 
   // Parse local time
-  const dateObj = new Date(dtVal);
+  let dtIso = dtVal;
+  if (dtIso.split(':').length === 2) {
+    dtIso += ':00';
+  }
+  let offset = parseFloat(utcOffsetInput.value) || 0;
+  let sign = offset >= 0 ? '+' : '-';
+  offset = Math.abs(offset);
+  let hours = Math.floor(offset);
+  let minutes = Math.floor((offset - hours) * 60);
+  let offsetStr = `${sign}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+  const dateObj = new Date(dtIso + offsetStr);
 
   // Call SunCalc library (expected in global scope)
   // SunCalc.getPosition returns azimuth in radians (0 = south, pointing west) and altitude in radians.
@@ -123,9 +140,16 @@ document.querySelectorAll('.val-copy').forEach(el => {
     const rawVal = e.target.getAttribute('data-val');
 
     if (rawVal.includes(',')) {
-      const [la, lo] = rawVal.split(',');
-      latInput.value = la.trim();
-      lngInput.value = lo.trim();
+      const parts = rawVal.split(',');
+      if (parts[0].includes('T')) {
+        dtInput.value = parts[0].trim();
+        if (utcOffsetInput && parts[1]) {
+          utcOffsetInput.value = parts[1].trim();
+        }
+      } else {
+        latInput.value = parts[0].trim();
+        lngInput.value = parts[1].trim();
+      }
     } else if (rawVal.includes('T')) {
       dtInput.value = rawVal;
     } else {
@@ -160,22 +184,3 @@ document.querySelectorAll('.val-copy').forEach(el => {
 })();
 
 
-// === Auto-run demo if parameters are pre-filled ===
-(function() {
-  setTimeout(function() {
-    var calcBtn = document.getElementById('calcBtn') || document.querySelector('button[id*="calc"]') || document.querySelector('button');
-    var latInput = document.querySelector('input[id*="lat"]');
-    if (latInput && !latInput.value) {
-      latInput.value = '39.9042';
-      var lngInput = document.querySelector('input[id*="lng"]') || document.querySelector('input[id*="lon"]');
-      if (lngInput) lngInput.value = '116.4074';
-      var dateInput = document.querySelector('input[type="date"]');
-      if (dateInput) dateInput.value = '2024-06-21';
-      var timeInput = document.querySelector('input[type="time"]');
-      if (timeInput) timeInput.value = '14:30';
-      [latInput, lngInput, dateInput, timeInput].forEach(function(el) {
-        if (el) el.dispatchEvent(new Event('input', {bubbles:true}));
-      });
-    }
-  }, 600);
-})();
