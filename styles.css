@@ -95,7 +95,7 @@ body {
 .hero {
     background: var(--card);
     padding: 24px;
-    border-radius: 12px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     margin-bottom: 24px;
 }
@@ -134,7 +134,7 @@ body {
 .panel {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 6px;
     padding: 24px;
 }
 
@@ -401,7 +401,7 @@ input[type="datetime-local"] {
 .article-panel {
     background: var(--article-bg);
     border: 1px solid var(--article-border);
-    border-radius: 12px;
+    border-radius: 6px;
     padding: 24px;
     margin-top: 24px;
     font-size: 14.5px;
