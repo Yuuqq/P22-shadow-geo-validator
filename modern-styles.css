@@ -380,3 +380,33 @@ button[aria-label*="导航"],
         border: 1px solid #ccc !important;
     }
 }
+
+/* 压掉 shared/onboarding.js 注入的 flow-guide 大圆角/胶囊（不改 projects/shared） */
+.flow-guide {
+    border-radius: 6px !important;
+    overflow: visible !important;
+    background: var(--paper-hi, #F7EFDA) !important;
+    border-color: var(--line, #D3C4A0) !important;
+    box-shadow: var(--shadow-card) !important;
+}
+.flow-guide-btn {
+    border-radius: 4px !important;
+    width: auto !important;
+    max-width: 100%;
+    background: var(--ink, #3A2E20) !important;
+    color: var(--paper-hi, #F7EFDA) !important;
+    border: 1px solid var(--ink, #3A2E20) !important;
+}
+.flow-guide-btn.primary {
+    background: var(--ink, #3A2E20) !important;
+    border-color: var(--ink, #3A2E20) !important;
+    color: var(--paper-hi, #F7EFDA) !important;
+}
+.flow-guide-btn:not(.primary) {
+    background: transparent !important;
+    color: var(--cinnabar, #A2402F) !important;
+    border: 1px solid rgba(162, 64, 47, 0.55) !important;
+}
+@media (max-width: 768px) {
+    .flow-guide-btn { width: auto !important; max-width: 100%; }
+}

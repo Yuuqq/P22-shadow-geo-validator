@@ -1,16 +1,16 @@
 :root {
-    --bg: #f5f6f8;
-    --card: #ffffff;
-    --border: #e0e2e6;
-    --text-main: #202124;
-    --text-muted: #5f6368;
-    --primary: #5c35d4;
+    --bg: #F0E6CF;
+    --card: #F7EFDA;
+    --border: #D3C4A0; --line: #D3C4A0;
+    --text-main: #3A2E20; --ink: #3A2E20;
+    --text-muted: #6E5B41;
+    --primary: #A2402F; --accent: #A2402F;
     --sun: #fbbc04;
     --shadow: #3c4043;
     --obs: #ea4335;
     --success: #0f9d58;
-    --input-bg: #fafafa;
-    --report-bg: #f8f9fa;
+    --input-bg: #F7EFDA;
+    --report-bg: #EFE4C6;
     --article-bg: #fff3e0;
     --article-border: #ffe0b2;
     --article-heading: #ef6c00;
@@ -19,7 +19,7 @@
     --val-copy-text: #d84315;
     --hint-color: #8d6e63;
     --compass-bg: radial-gradient(circle, #fafafa 60%, #fff 100%);
-    --text-btn-hover-bg: #f0ebf8;
+    --text-btn-hover-bg: rgba(162,64,47,0.08);
     --val-fail-bg: #fce8e6;
     --val-fail-text: #c5221f;
 }
@@ -80,7 +80,7 @@
 
 body {
     margin: 0;
-    font-family: "Segoe UI", "Noto Sans SC", system-ui, sans-serif;
+    font-family: "Noto Sans SC","Microsoft YaHei",sans-serif;
     background: var(--bg);
     color: var(--text-main);
     line-height: 1.6;
@@ -364,7 +364,7 @@ input[type="datetime-local"] {
 .report-box {
     background: var(--report-bg);
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 6px;
     border-left: 4px solid var(--primary);
 }
 
@@ -503,7 +503,7 @@ details[open] summary { margin-bottom: 8px; }
 }
 .toast-msg {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: #333; color: #fff; padding: 10px 20px; border-radius: 8px;
+  background: #241B11; color: #F7EFDA; padding: 10px 20px; border-radius: 6px;
   font-size: 0.9rem; z-index: 9999; opacity: 0;
   transition: opacity 0.3s ease;
 }
