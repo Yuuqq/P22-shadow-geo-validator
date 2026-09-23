@@ -7,6 +7,7 @@ const dtInput = document.getElementById("dt");
 const latInput = document.getElementById("lat");
 const lngInput = document.getElementById("lng");
 const obsInput = document.getElementById("obsShadow");
+const tzInput = document.getElementById("tzOffset");
 const btnCalc = document.getElementById("btnCalc");
 const btnLoadCase = document.getElementById("btnLoadCase");
 const caseStudyPanel = document.getElementById("caseStudy");
@@ -27,6 +28,33 @@ const pinObserved = document.getElementById("pinObserved");
 const now = new Date();
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 dtInput.value = now.toISOString().slice(0, 16);
+
+let tzTouched = false;
+for (let offset = -12; offset <= 14; offset += 1) {
+  const option = document.createElement("option");
+  option.value = String(offset);
+  option.textContent = `UTC${offset >= 0 ? "+" : ""}${offset}`;
+  tzInput.appendChild(option);
+}
+function suggestOffset(lng) {
+  if (!Number.isFinite(lng)) return 8;
+  return Math.max(-12, Math.min(14, Math.round(lng / 15)));
+}
+function syncTimezone() {
+  if (tzTouched) return;
+  tzInput.value = String(suggestOffset(parseFloat(lngInput.value)));
+}
+tzInput.addEventListener("change", () => {
+  tzTouched = true;
+});
+lngInput.addEventListener("change", syncTimezone);
+syncTimezone();
+
+function dateAtOffset(dtVal, offsetHours) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(dtVal);
+  if (!match) return new Date(NaN);
+  return new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4]) - offsetHours, Number(match[5])));
+}
 
 // Transform azimuth (0-360 starting from South) to CSS rotation degrees (Starting from North = 0)
 // The needle div is drawn downwards from the center.
@@ -53,8 +81,13 @@ btnCalc.addEventListener("click", () => {
     return;
   }
 
-  // Parse local time
-  const dateObj = new Date(dtVal);
+  const dateObj = dateAtOffset(dtVal, Number(tzInput.value));
+  if (Number.isNaN(dateObj.getTime())) {
+    validationResult.classList.remove("hidden");
+    validationResult.classList.add("fail");
+    valMessage.textContent = "时间格式无法解析。请重新选择拍摄时间。";
+    return;
+  }
 
   // Call SunCalc library (expected in global scope)
   // SunCalc.getPosition returns azimuth in radians (0 = south, pointing west) and altitude in radians.
@@ -83,7 +116,7 @@ btnCalc.addEventListener("click", () => {
     resShadowAz.textContent = "无阴影";
     validationResult.classList.remove("hidden");
     validationResult.classList.add("fail");
-    valMessage.textContent = "该时间地点处于黑夜，不可能产生阳光阴影！如果照片有阳光，则说明由于时差或编造，时间和地点并不匹配。";
+    valMessage.textContent = "按这个时间和地点，太阳在地平线以下，平地不该有阳光阴影。若画面里有清晰日影，时间和地点至少有一项对不上，需要复核时区、日期和测量。";
     return;
   }
 
@@ -95,6 +128,12 @@ btnCalc.addEventListener("click", () => {
   const obsValStr = obsInput.value.trim();
   if (obsValStr !== "") {
     const obsAzimuth = parseFloat(obsValStr);
+    if (!Number.isFinite(obsAzimuth) || obsAzimuth < 0 || obsAzimuth > 360) {
+      validationResult.classList.remove("hidden");
+      validationResult.classList.add("fail");
+      valMessage.textContent = "阴影方位角要填 0 到 360 之间的数字。";
+      return;
+    }
     setNeedleAngle(pinObserved, obsAzimuth);
 
     // Check difference
@@ -104,10 +143,10 @@ btnCalc.addEventListener("click", () => {
     validationResult.classList.remove("hidden");
     if (diff <= 15) {
       validationResult.classList.remove("fail");
-      valMessage.textContent = `✅ 验证通过。观察到的阴影(${obsAzimuth}°)与理论极度吻合(偏差 ${diff.toFixed(1)}°)。该视频发生在此时间和地点具有天文学可行性。`;
+      valMessage.textContent = `阴影方向和理论值相差 ${diff.toFixed(1)}°，落在 ±15° 以内。这只说明方向上说得通。人工测角、镜头和地面坡度都可能带来这个量级的误差。`;
     } else {
       validationResult.classList.add("fail");
-      valMessage.textContent = `❌ 验证失败！观察阴影(${obsAzimuth}°)与在此坐标此时此刻应该出现的物理阴影(${shadowAzimuthNav.toFixed(1)}°)存在巨大偏差(${diff.toFixed(1)}°)。判定：素材系被盗用、篡改或时间地点造假。`;
+      valMessage.textContent = `阴影方向和理论值相差 ${diff.toFixed(1)}°，超出 ±15°。这是需要复核的线索，不是造假判定。`;
     }
   } else {
     validationResult.classList.add("hidden");
@@ -129,6 +168,7 @@ document.querySelectorAll('.val-copy').forEach(el => {
       const [la, lo] = rawVal.split(',');
       latInput.value = la.trim();
       lngInput.value = lo.trim();
+      syncTimezone();
     } else if (rawVal.includes('T')) {
       dtInput.value = rawVal;
     } else {

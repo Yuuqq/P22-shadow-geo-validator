@@ -42,7 +42,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       <section class="calculator panel">
         <div class="panel-header">
           <h2>📐 核心推算参数输入</h2>
-          <button id="btnLoadCase" class="btn text-btn">📖 载入经典案例</button>
+          <button id="btnLoadCase" class="btn text-btn" type="button">载入经典案例</button>
         </div>
 
         <div class="form-grid">
@@ -56,8 +56,11 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
           </div>
 
           <div class="form-group">
-            <label for="dt">2. 拍摄时间 (当地时间)</label>
+            <label for="dt">2. 拍摄时间（拍摄地当地时间）</label>
             <input type="datetime-local" id="dt" value="">
+            <label for="tzOffset">拍摄地时区（相对 UTC 的小时）</label>
+            <select id="tzOffset"></select>
+            <p class="help-text">上面的时间按这个时区解释，不按你电脑现在的时区。</p>
           </div>
 
           <div class="form-group">
@@ -67,7 +70,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
           </div>
         </div>
 
-        <button id="btnCalc" class="btn primary full-width">🛰️ 执行天文轨线计算</button>
+        <button id="btnCalc" class="btn primary full-width" type="button">计算太阳方位</button>
       </section>
 
       <!-- 视觉渲染与验证反馈 -->
@@ -105,7 +108,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
             <p>太阳高度角 (Altitude): <strong id="resSunAlt">-</strong></p>
             <p>理论阴影角 (Shadow Angle): <strong id="resShadowAz">-</strong></p>
           </div>
-          <div id="validationResult" class="report-box r-val hidden">
+          <div id="validationResult" class="report-box r-val hidden" role="status" aria-live="polite">
             <h4>核验结论</h4>
             <p id="valMessage">-</p>
           </div>
