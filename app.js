@@ -175,13 +175,9 @@ document.querySelectorAll('.val-copy').forEach(el => {
       obsInput.value = rawVal;
     }
 
-    // Highlight effect
-    const origBg = el.style.background;
-    el.style.background = '#4caf50';
-    el.style.color = '#fff';
+    el.classList.add("is-copied");
     setTimeout(() => {
-      el.style.background = origBg;
-      el.style.color = '';
+      el.classList.remove("is-copied");
     }, 500);
   };
   el.addEventListener('click', applyVal);
