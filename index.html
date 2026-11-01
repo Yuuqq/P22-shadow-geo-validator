@@ -2,164 +2,182 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>P22 OSINT 太阳阴影测绘与寻址推算仪</title>
   <link rel="stylesheet" href="../shared/design-tokens.css" />
-<link rel="stylesheet" href="./modern-styles.css" />
-<link rel="stylesheet" href="./styles.css" />
-<meta name="description" content="基于 SunCalc 算法的太阳方位角测算与照片拍摄地地理核验工具" />
+  <link rel="stylesheet" href="../shared/modern-styles.css" />
+  <link rel="stylesheet" href="../shared/tool-chrome.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <meta name="description" content="基于 SunCalc 算法的太阳方位角测算与照片拍摄地地理核验工具" />
   <link rel="manifest" href="./manifest.json" />
 
   <meta property="og:title" content="P22 阴影验证器 — 新闻素养工具箱">
   <meta property="og:description" content="互动式新闻素养教学工具：阴影验证器。浏览器打开即用，数据不离开本地。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yuuqq.github.io/P22-shadow-geo-validator/">
-    <style media="print">
-.gnav,.pedagogy-panel,.explore-section,[class*="dark-toggle"],button[aria-label]{display:none!important}
-body{background:#fff!important;color:#000!important;font-size:11pt}
-.app,main,.container{box-shadow:none!important;border:none!important;padding:0!important}
-a{color:#000!important;text-decoration:underline}
-a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
-@page{margin:2cm}
-</style>
+  <style media="print">
+    .gnav, .gnav-fab, .gnav-overlay, .pedagogy-panel, .explore-section, [class*="dark-toggle"], .flow-guide {
+      display: none !important;
+    }
+    body {
+      background: var(--print-paper) !important;
+      color: var(--print-ink) !important;
+      font-size: 11pt;
+    }
+    .app, main, .container {
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+    a { color: var(--print-ink) !important; text-decoration: underline; }
+    a[href]::after {
+      content: " (" attr(href) ")";
+      font-size: 9pt;
+      color: color-mix(in srgb, var(--print-ink) 70%, var(--print-paper));
+    }
+    @page { margin: 2cm; }
+  </style>
 </head>
 
 <body>
-  <main aria-label="主内容区域" class="app">
-    <header class="hero">
-      <h1>OSINT 太阳阴影测绘与寻址推算仪</h1>
-      <p>
-        在开源情报 (OSINT) 调查中，照片中物体阴影的朝向和长度是核实“拍摄时间”与“拍摄地点”的铁证。
-        本计算器调用真实的 <strong>SunCalc 天文几何算法</strong>，助你像 Bellingcat 调查员一样，用物理学原理戳穿谎言。
-      </p>
+  <div class="page-shell">
+    <header class="tool-chrome" data-tool-id="P22">
+      <a class="tool-chrome__mark" href="../P00-dashboard/">新闻实验工具</a>
+      <span class="tool-chrome__id">P22</span>
     </header>
 
-    <section class="card"><details class="teach-card" open><summary>🎓 阴影分析与地理位置验证</summary><p>通过照片中的阴影角度和光线方向，结合拍摄日期和当地太阳位置，可以反向推算照片的拍摄地点和时间。这是 OSINT（开源情报）中的经典验证技术，广泛用于新闻核查和战争报道。</p></details></section>
+    <main class="app" aria-label="主内容区域">
+      <details class="tool-teach">
+        <summary>如何使用</summary>
+        <p>填写拍摄地点的经纬度、拍摄地当地时间和时区。要和照片对照时，再填阴影方位角（0° 为正北，顺时针）。点「计算太阳方位」，查看太阳方位角、高度角和理论阴影角。方向差在 ±15° 以内，只说明方向说得通，不能单独当作结论。</p>
+        <p>照片中的阴影角度和光线方向，结合拍摄日期与当地太阳位置，可以用来核对声称的拍摄地点和时间是否彼此相容。这是开源情报里常用的几何核对，课堂演示用内置案例即可。</p>
+      </details>
 
-    <div class="dashboard">
-      <!-- 计算器与沙盘输入区 -->
-      <section class="calculator panel">
-        <div class="panel-header">
-          <h2>📐 核心推算参数输入</h2>
-          <button id="btnLoadCase" class="btn text-btn" type="button">载入经典案例</button>
-        </div>
+      <header class="hero">
+        <h1>OSINT 太阳阴影测绘与寻址推算仪</h1>
+        <p>
+          在开源情报 (OSINT) 调查中，照片中物体阴影的朝向和长度是核实“拍摄时间”与“拍摄地点”的铁证。
+          本计算器调用真实的 <strong>SunCalc 天文几何算法</strong>，助你像 Bellingcat 调查员一样，用物理学原理戳穿谎言。
+        </p>
+      </header>
 
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="lat">1. 拍摄地点 (经纬度)</label>
-            <div class="coord-inputs">
-              <input type="number" id="lat" placeholder="纬度 (-90 到 90)" step="0.0001" value="31.2304">
-              <input type="number" id="lng" placeholder="经度 (-180 到 180)" step="0.0001" value="121.4737">
+      <div class="dashboard">
+        <!-- 计算器与沙盘输入区 -->
+        <section class="calculator panel">
+          <div class="panel-header">
+            <h2>核心推算参数输入</h2>
+            <button id="btnLoadCase" class="btn text-btn secondary" type="button">载入经典案例</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="lat">1. 拍摄地点 (经纬度)</label>
+              <div class="coord-inputs">
+                <input type="number" id="lat" placeholder="纬度 (-90 到 90)" step="0.0001" value="31.2304">
+                <input type="number" id="lng" placeholder="经度 (-180 到 180)" step="0.0001" value="121.4737">
+              </div>
+              <p class="help-text">正数为北纬/东经，负数为南纬/西经</p>
             </div>
-            <p class="help-text">正数为北纬/东经，负数为南纬/西经</p>
+
+            <div class="form-group">
+              <label for="dt">2. 拍摄时间（拍摄地当地时间）</label>
+              <input type="datetime-local" id="dt" value="">
+              <label for="tzOffset">拍摄地时区（相对 UTC 的小时）</label>
+              <select id="tzOffset"></select>
+              <p class="help-text">上面的时间按这个时区解释，不按你电脑现在的时区。</p>
+            </div>
+
+            <div class="form-group">
+              <label for="obsShadow">3. 提取的阴影方位角 (选填, 0-360°)</label>
+              <input type="number" id="obsShadow" placeholder="例: 正北阴影为 0°, 正东 90°" min="0" max="360" step="1">
+              <p class="help-text">在卫星图或照片中测量的物体阴影方向。太阳方位角与阴影角相差 180°。</p>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="dt">2. 拍摄时间（拍摄地当地时间）</label>
-            <input type="datetime-local" id="dt" value="">
-            <label for="tzOffset">拍摄地时区（相对 UTC 的小时）</label>
-            <select id="tzOffset"></select>
-            <p class="help-text">上面的时间按这个时区解释，不按你电脑现在的时区。</p>
+          <button id="btnCalc" class="btn primary full-width" type="button">计算太阳方位</button>
+        </section>
+
+        <!-- 视觉渲染与验证反馈 -->
+        <section class="visualizer panel">
+          <h2>日晷仪 (Sun-Shadow Compass)</h2>
+
+          <div id="compassContainer" class="compass-container">
+            <div class="compass-rose">
+              <span class="mark m-n">北(0°)</span>
+              <span class="mark m-e">东(90°)</span>
+              <span class="mark m-s">南(180°)</span>
+              <span class="mark m-w">西(270°)</span>
+
+              <div id="pinShadow" class="needle shadow-needle hidden">
+                <div class="line"></div>
+                <div class="label">理论阴影</div>
+              </div>
+              <div id="pinSun" class="needle sun-needle hidden">
+                <div class="line"></div>
+                <div class="label">太阳</div>
+              </div>
+              <div id="pinObserved" class="needle obs-needle hidden">
+                <div class="line"></div>
+                <div class="label">目测阴影</div>
+              </div>
+
+              <div class="center-dot"></div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="obsShadow">3. 提取的阴影方位角 (选填, 0-360°)</label>
-            <input type="number" id="obsShadow" placeholder="例: 正北阴影为 0°, 正东 90°" min="0" max="360" step="1">
-            <p class="help-text">在卫星图或照片中测量的物体阴影方向。太阳方位角与阴影角相差 180°。</p>
+          <div class="results-report">
+            <div class="report-box r-sys">
+              <h4>算法测算结果</h4>
+              <p>太阳方位角 (Azimuth): <strong id="resSunAz">-</strong></p>
+              <p>太阳高度角 (Altitude): <strong id="resSunAlt">-</strong></p>
+              <p>理论阴影角 (Shadow Angle): <strong id="resShadowAz">-</strong></p>
+            </div>
+            <div id="validationResult" class="report-box r-val hidden" role="status" aria-live="polite">
+              <h4>核验结论</h4>
+              <p id="valMessage">-</p>
+            </div>
           </div>
-        </div>
+        </section>
+      </div>
 
-        <button id="btnCalc" class="btn primary full-width" type="button">计算太阳方位</button>
+      <!-- 教学案例区 -->
+      <section id="caseStudy" class="article-panel hidden">
+        <h3>Bellingcat 经典战例：喀麦隆处决视频的寻址</h3>
+        <p>
+          <strong>背景：</strong> 2018年，一段视频显示喀麦隆军人处决了平民。喀麦隆政府最初声称这是“发在马里的假新闻”。
+        </p>
+        <p>
+          <strong>侦破核心：</strong> 英国开源情报组织 Bellingcat 的调查员仔细观察了视频中士兵踩在泥土路上的脚印和人体倒下的阴影。他们：
+        <ol>
+          <li>通过对比 Google Earth 山脊线，确认了疑似地点的经纬度（<code class="val-copy"
+              data-val="10.9859,14.2831">10.9859, 14.2831</code>）。</li>
+          <li>通过测量视频中士兵投下的极短的影子，发现阴影方位约为 <code class="val-copy" data-val="100">100°</code>（略偏东），且此时太阳几乎在正头顶。</li>
+          <li>结合当时当地气候，逆向利用本系统（SunCalc 公式），推算出该影长的太阳高度角，锁定了拍摄时间只能在 3 月底到 4 月初的干旱季正午 <code class="val-copy"
+              data-val="2015-03-31T12:00">2015-03-31 12:00</code>。</li>
+        </ol>
+        </p>
+        <p class="hint">点击上方代码块中的数值，尝试将战例数据填入计算器，验证政府的谎言！</p>
       </section>
 
-      <!-- 视觉渲染与验证反馈 -->
-      <section class="visualizer panel">
-        <h2>🧭 日晷仪 (Sun-Shadow Compass)</h2>
-
-        <div id="compassContainer" class="compass-container">
-          <div class="compass-rose">
-            <span class="mark m-n">北(0°)</span>
-            <span class="mark m-e">东(90°)</span>
-            <span class="mark m-s">南(180°)</span>
-            <span class="mark m-w">西(270°)</span>
-
-            <div id="pinShadow" class="needle shadow-needle hidden">
-              <div class="line"></div>
-              <div class="label">理论阴影</div>
-            </div>
-            <div id="pinSun" class="needle sun-needle hidden">
-              <div class="line"></div>
-              <div class="label">☀️ 太阳</div>
-            </div>
-            <div id="pinObserved" class="needle obs-needle hidden">
-              <div class="line"></div>
-              <div class="label">目测阴影</div>
-            </div>
-
-            <div class="center-dot"></div>
-          </div>
-        </div>
-
-        <div class="results-report">
-          <div class="report-box r-sys">
-            <h4>算法测算结果</h4>
-            <p>太阳方位角 (Azimuth): <strong id="resSunAz">-</strong></p>
-            <p>太阳高度角 (Altitude): <strong id="resSunAlt">-</strong></p>
-            <p>理论阴影角 (Shadow Angle): <strong id="resShadowAz">-</strong></p>
-          </div>
-          <div id="validationResult" class="report-box r-val hidden" role="status" aria-live="polite">
-            <h4>核验结论</h4>
-            <p id="valMessage">-</p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- 教学案例区 -->
-    <section id="caseStudy" class="article-panel hidden">
-      <h3>📚 Bellingcat 经典战例：喀麦隆处决视频的寻址</h3>
-      <p>
-        <strong>背景：</strong> 2018年，一段视频显示喀麦隆军人处决了平民。喀麦隆政府最初声称这是“发在马里的假新闻”。
-      </p>
-      <p>
-        <strong>侦破核心：</strong> 英国开源情报组织 Bellingcat 的调查员仔细观察了视频中士兵踩在泥土路上的脚印和人体倒下的阴影。他们：
-      <ol>
-        <li>通过对比 Google Earth 山脊线，确认了疑似地点的经纬度（<code class="val-copy"
-            data-val="10.9859,14.2831">10.9859, 14.2831</code>）。</li>
-        <li>通过测量视频中士兵投下的极短的影子，发现阴影方位约为 <code class="val-copy" data-val="100">100°</code>（略偏东），且此时太阳几乎在正头顶。</li>
-        <li>结合当时当地气候，逆向利用本系统（SunCalc 公式），推算出该影长的太阳高度角，锁定了拍摄时间只能在 3 月底到 4 月初的干旱季正午 <code class="val-copy"
-            data-val="2015-03-31T12:00">2015-03-31 12:00</code>。</li>
-      </ol>
-      </p>
-      <p class="hint">💡 点击上方代码块中的数值，尝试将战例数据填入计算器，验证政府的谎言！</p>
-    </section>
-
-  </main>
-  <script src="./pm-metrics.js" defer></script>
-<script src="../shared/vendor/suncalc.js" defer></script>
-<script src="./app.js" defer></script>
-
-  <!-- Privacy Notice -->
-  <div style="text-align:center;padding:12px 16px;font-size:12px;color:#888;border-top:1px solid #eee;margin-top:24px;">
-    🔒 隐私提示：本工具所有数据处理均在您的浏览器本地完成，不会上传任何数据至服务器。
+      <footer class="tool-footer">
+        数据边界以附录 A 为准：能在本机完成的计算不主动外发；示例数据仅供课堂；本工具输出不得单独当作结论。
+        <a href="../P00-dashboard/">返回工具箱</a>
+      </footer>
+    </main>
   </div>
-
-  <!-- Cross-Project Navigation -->
-  <nav aria-label="工具箱导航" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:16px;color:#666;">
-    <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
-    <span style="opacity:.4">P22</span>
-  </nav>
-
-<script src="../shared/dark-toggle.js" defer></script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
-<script src="../shared/cmd-palette.js" defer></script>
-<script src="../shared/toast.js" defer></script>
-<script src="../shared/onboarding.js" defer></script>
-<script src="../shared/pedagogy-data-p1.js" defer></script>
-<script src="../shared/pedagogy-data-p2.js" defer></script>
-<script src="../shared/global-nav.js" defer></script>
-<script src="../shared/kbd-hints.js" defer></script>
+  <script src="./pm-metrics.js" defer></script>
+  <script src="../shared/vendor/suncalc.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="../shared/dark-toggle.js" defer></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+  <script src="../shared/cmd-palette.js" defer></script>
+  <script src="../shared/toast.js" defer></script>
+  <script src="../shared/onboarding.js" defer></script>
+  <script src="../shared/pedagogy-data-p1.js" defer></script>
+  <script src="../shared/pedagogy-data-p2.js" defer></script>
+  <script src="../shared/global-nav.js" defer></script>
+  <script src="../shared/kbd-hints.js" defer></script>
   <script src="../shared/url-state.js" defer></script>
 </body>
 
